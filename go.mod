@@ -2,7 +2,14 @@ module github.com/Chara-X/helm
 
 go 1.23.1
 
-require helm.sh/helm/v3 v3.16.3
+replace github.com/Chara-X/util => ../util
+
+require (
+	github.com/Chara-X/util v0.0.0-00010101000000-000000000000
+	helm.sh/helm/v3 v3.16.3
+	k8s.io/cli-runtime v0.31.1
+	k8s.io/client-go v0.31.1
+)
 
 require (
 	dario.cat/mergo v1.0.1 // indirect
@@ -130,8 +137,6 @@ require (
 	k8s.io/apiextensions-apiserver v0.31.1 // indirect
 	k8s.io/apimachinery v0.31.1 // indirect
 	k8s.io/apiserver v0.31.1 // indirect
-	k8s.io/cli-runtime v0.31.1 // indirect
-	k8s.io/client-go v0.31.1 // indirect
 	k8s.io/component-base v0.31.1 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20240228011516-70dd3763d340 // indirect
