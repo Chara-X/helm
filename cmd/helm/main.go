@@ -3,10 +3,9 @@ package main
 import (
 	"io"
 	"os"
-	"sync"
 
-	"github.com/Chara-X/helm/getter"
-	"github.com/Chara-X/helm/repo"
+	"github.com/Chara-X/helm/pkg/getter"
+	"github.com/Chara-X/helm/pkg/repo"
 	"gopkg.in/yaml.v3"
 	repoRef "helm.sh/helm/v3/pkg/repo"
 )
@@ -17,34 +16,26 @@ var (
 )
 
 func main() {
-	switch os.Args[1] {
+	switch os.Args[0] {
 	case "repo":
-		switch os.Args[2] {
-		case "add":
-			var f repo.File
-			var data, _ = os.ReadFile(repoConfig)
-			yaml.Unmarshal(data, &f)
-			f.Repositories = append(f.Repositories, &repoRef.Entry{Name: os.Args[3], URL: os.Args[4]})
-			data, _ = yaml.Marshal(f)
-			os.WriteFile(repoConfig, data, 0600)
+		switch os.Args[1] {
 		case "update":
-			var f repo.File
+			var repos repo.File
 			var data, _ = os.ReadFile(repoConfig)
-			yaml.Unmarshal(data, &f)
-			var wg sync.WaitGroup
-			for _, r := range f.Repositories {
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					var cli, _ = getter.NewHTTPGetter()
-					var resp, _ = cli.Get(r.URL + "/index.yaml")
-					var cache, _ = os.Create(repoCache + "/" + r.Name + "-index.yaml")
-					io.Copy(cache, resp)
-				}()
+			yaml.Unmarshal(data, &repos)
+			for _, r := range repos.Repositories {
+				var get, _ = getter.NewHTTPGetter()
+				var res, _ = get.Get(r.URL + "/index.yaml")
+				var cache, _ = os.Create(repoCache + "/" + r.Name + "-index.yaml")
+				io.Copy(cache, res)
 			}
-			wg.Wait()
-		default:
-			panic("unimplemented")
+		case "add":
+			var repos repo.File
+			var data, _ = os.ReadFile(repoConfig)
+			yaml.Unmarshal(data, &repos)
+			repos.Repositories = append(repos.Repositories, &repoRef.Entry{Name: os.Args[3], URL: os.Args[4]})
+			data, _ = yaml.Marshal(repos)
+			os.WriteFile(repoConfig, data, 0600)
 		}
 	default:
 		panic("unimplemented")

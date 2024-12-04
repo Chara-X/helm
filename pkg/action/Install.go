@@ -31,11 +31,11 @@ func (i *Install) Run(chrt *chart.Chart, vals map[string]interface{}) (*release.
 		i.i.ReleaseName, i.i.Namespace = i.ReleaseName, i.Namespace
 		return i.i.Run(chrt, vals)
 	}
-	var manifest = bytes.NewBuffer(nil)
-	template.Must(template.New(chrt.Templates[0].Name).Parse(string(chrt.Templates[0].Data))).Execute(manifest, map[string]interface{}{"Chart": chrt.Metadata, "Release": map[string]interface{}{"Name": i.ReleaseName, "Namespace": i.Namespace}, "Values": maps.Merge(chrt.Values, vals)})
-	var resources, _ = resource.NewBuilder(i.cfg.RESTClientGetter).NamespaceParam(i.Namespace).Unstructured().Stream(manifest, "").Do().Infos()
+	var buf = bytes.NewBuffer(nil)
+	template.Must(template.New(chrt.Templates[0].Name).Parse(string(chrt.Templates[0].Data))).Execute(buf, map[string]interface{}{"Chart": chrt.Metadata, "Release": map[string]interface{}{"Name": i.ReleaseName, "Namespace": i.Namespace}, "Values": maps.Merge(chrt.Values, vals)})
+	var resources, _ = resource.NewBuilder(i.cfg.RESTClientGetter).NamespaceParam(i.Namespace).Unstructured().Stream(buf, "").Do().Infos()
 	i.cfg.KubeClient.Create(resources)
-	var rel = &release.Release{Manifest: manifest.String()}
-	i.cfg.Releases.Driver.Create(i.ReleaseName, rel)
-	return rel, nil
+	var rls = &release.Release{Manifest: buf.String()}
+	i.cfg.Releases.Driver.Create(i.ReleaseName, rls)
+	return rls, nil
 }

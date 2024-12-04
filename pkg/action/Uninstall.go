@@ -28,9 +28,9 @@ func (u *Uninstall) Run(name string) (*release.UninstallReleaseResponse, error) 
 	if helm.Reference {
 		return u.u.Run(name)
 	}
-	var rel, _ = u.cfg.Releases.Driver.Get(name)
-	var resources, _ = u.cfg.KubeClient.Build(strings.NewReader(strings.Join(slices.Reverse(sep.Split(rel.Manifest, -1)), "\n---\n")), false)
+	var rls, _ = u.cfg.Releases.Driver.Get(name)
+	var resources, _ = u.cfg.KubeClient.Build(strings.NewReader(strings.Join(slices.Reverse(sep.Split(rls.Manifest, -1)), "\n---\n")), false)
 	u.cfg.KubeClient.Delete(resources)
-	u.cfg.Releases.Driver.Delete(rel.Name)
-	return &release.UninstallReleaseResponse{Release: rel}, nil
+	u.cfg.Releases.Driver.Delete(rls.Name)
+	return &release.UninstallReleaseResponse{Release: rls}, nil
 }
