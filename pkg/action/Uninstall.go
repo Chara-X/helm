@@ -30,7 +30,7 @@ func (u *Uninstall) Run(name string) (*release.UninstallReleaseResponse, error) 
 	}
 	var rls, _ = u.cfg.Releases.Driver.Get(name)
 	var resources, _ = u.cfg.KubeClient.Build(strings.NewReader(strings.Join(slices.Reverse(sep.Split(rls.Manifest, -1)), "\n---\n")), false)
-	u.cfg.KubeClient.Delete(resources)
 	u.cfg.Releases.Driver.Delete(rls.Name)
+	u.cfg.KubeClient.Delete(resources)
 	return &release.UninstallReleaseResponse{Release: rls}, nil
 }

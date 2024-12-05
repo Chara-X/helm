@@ -1,4 +1,4 @@
 apiVersion: v1
 repositories:
-  - name: example
-    url: http://example.com/charts
+  - name: zoo
+    url: https://zoo-project.github.io/charts

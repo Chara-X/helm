@@ -1,0 +1,2 @@
+ownerBy: bitnami
+image: docker.io/bitnami/nginx:1.27.0-debian-12-r3

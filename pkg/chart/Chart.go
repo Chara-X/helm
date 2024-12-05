@@ -1,7 +1,6 @@
 package chart
 
 import (
-	"github.com/Chara-X/helm"
 	"helm.sh/helm/v3/pkg/chart"
 	"helm.sh/helm/v3/pkg/chart/loader"
 )
@@ -13,9 +12,6 @@ type Chart struct {
 }
 
 func Load(name string) (*Chart, error) {
-	if helm.Reference {
-		var c, err = loader.Load(name)
-		return &Chart{Metadata: c.Metadata, Templates: c.Templates, Values: c.Values}, err
-	}
-	panic("unimplemented")
+	var c, err = loader.Load(name)
+	return &Chart{Metadata: c.Metadata, Templates: c.Templates, Values: c.Values}, err
 }
