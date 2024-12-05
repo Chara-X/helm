@@ -34,7 +34,7 @@ func (i *Install) Run(chrt *chart.Chart, vals map[string]interface{}) (*release.
 	}
 	var buf = bytes.NewBuffer(nil)
 	template.Must(template.New(chrt.Templates[0].Name).Parse(string(chrt.Templates[0].Data))).Execute(buf, map[string]interface{}{"Chart": chrt.Metadata, "Release": map[string]interface{}{"Name": i.ReleaseName, "Namespace": i.Namespace}, "Values": maps.Merge(chrt.Values, vals)})
-	var rls = &release.Release{Info: &release.Info{Status: release.StatusDeployed}, Manifest: buf.String()}
+	var rls = &release.Release{Name: i.ReleaseName, Namespace: i.Namespace, Manifest: buf.String(), Info: &release.Info{}}
 	var resources, _ = resource.NewBuilder(i.cfg.RESTClientGetter).NamespaceParam(i.Namespace).Unstructured().Stream(buf, "").Do().Infos()
 	i.cfg.KubeClient.Create(resources)
 	i.cfg.Releases.Driver.Create(i.ReleaseName, rls)

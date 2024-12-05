@@ -9,7 +9,7 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    ownerBy: {{ .Values.ownerBy }}
+    owner: {{ .Values.owner }}
 spec:
   containers:
   - name: container

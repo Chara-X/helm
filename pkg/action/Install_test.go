@@ -15,7 +15,7 @@ func ExampleInstall() {
 	var i = NewInstall(cfg)
 	i.ReleaseName, i.Namespace = "example", "helm"
 	var chrt, _ = chart.Load("example")
-	var vals = map[string]interface{}{"ownerBy": "chara"}
+	var vals = map[string]interface{}{"owner": "chara"}
 	var rls, _ = i.Run(chrt, vals)
 	fmt.Println(rls.Manifest)
 	// Output:
@@ -30,7 +30,7 @@ func ExampleInstall() {
 	//   name: example
 	//   namespace: helm
 	//   labels:
-	//     ownerBy: chara
+	//     owner: chara
 	// spec:
 	//   containers:
 	//   - name: container
